@@ -33,6 +33,14 @@
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Categoría
                                             </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium
+                                            text-gray-500 uppercase tracking-wider">
+                                                Ventas
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium
+                                            text-gray-500 uppercase tracking-wider">
+                                                Reservas
+                                            </th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Estado
                                             </th>
@@ -62,6 +70,32 @@
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">{{ $product->subcategory->category->name }}</div>
                                                 <div class="text-sm text-gray-500">{{ $product->subcategory->name }}</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <?php $totalQuantity = 0?>
+                                                @foreach($orders as $order)
+                                                    <?php $items = json_decode($order->content)?>
+                                                    @foreach($items as $item)
+                                                        @if($item->name == $product->name)
+                                                                <?php $totalQuantity += $item->qty?>
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
+                                                {{$totalQuantity}}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <?php $totalQuantity = 0?>
+                                                @foreach($orders as $order)
+                                                    @if($order->status == 1)
+                                                        <?php $items = json_decode($order->content)?>
+                                                        @foreach($items as $item)
+                                                            @if($item->name == $product->name)
+                                                               <?php $totalQuantity ++?>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+                                                {{$totalQuantity}}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $product->status == 1 ? 'red' : 'green' }}-100 text-{{ $product->status == 1 ? 'red' : 'green' }}-800">

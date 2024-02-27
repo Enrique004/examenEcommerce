@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Order;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -10,7 +11,12 @@ class ShowProducts extends Component
 {
     use WithPagination;
 
-    public $search;
+    public $search,$orders;
+
+    public function mount()
+    {
+        $this->orders = Order::all();
+    }
 
     public function updatingSearch()
     {
