@@ -15,26 +15,19 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Tests\CreateData;
 use Tests\TestCase;
 
 class UsersTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreateData;
 
     /** @test */
-    public function you_can_show_the_links_of_login_if_you_are_not_logged_in()
+    function you_can_show_the_links_of_login_if_you_are_not_logged_in()
     {
-        $category = Category::factory()->create([
-            'name' => 'Celulares y tablets',
-            'slug' => Str::slug('Celulares y tablets'),
-            'icon' => '<i class="fas fa-mobile-alt"></i>'
-        ]);
+        $category = $this->createCategory();
 
-        Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'name' => 'Celulares y smartphones',
-            'slug' => Str::slug('Celulares y smartphones'),
-        ]);
+        $subcategory = $this->createSubcategory($category->id);
 
         $this->assertGuest(); // Simula que el user no esta autenticado
 
@@ -120,29 +113,11 @@ class UsersTest extends TestCase
     /** @test */
     function the_cart_is_saved_when_you_log_out()
     {
-        $category = Category::factory()->create([
-            'name' => 'Celulares y tablets',
-            'slug' => Str::slug('Celulares y tablets'),
-            'icon' => '<i class="fas fa-mobile-alt"></i>',
-        ]);
+        $category = $this->createCategory();
 
-        $category->brands()->attach(Brand::factory()->create());
+        $subcategory = $this->createSubcategory($category->id);
 
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'name' => 'Celulares y smartphones',
-            'slug' => Str::slug('Celulares y smartphones'),
-        ]);
-
-        $product = Product::factory()->create([
-            'subcategory_id' => $subcategory->id,
-            'quantity' => 5
-        ]);
-
-        Image::factory(1)->create([
-            'imageable_id' => $product->id,
-            'imageable_type' => Product::class
-        ]);
+        $product = $this->createProduct($subcategory->id);
 
         $user = User::factory()->create();
 
