@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Subcategory;
@@ -33,12 +34,14 @@ trait CreateData
      * @param $category_id
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
      */
-    public function createSubcategory($category_id)
+    public function createSubcategory($category_id,$color = 0,$size = 0)
     {
         $subcategory = Subcategory::factory()->create([
             'category_id' => $category_id,
             'name' => 'Celulares y smartphones',
             'slug' => Str::slug('Celulares y smartphones'),
+            'color' => $color,
+            'size' => $size
         ]);
 
         return $subcategory;
@@ -67,5 +70,21 @@ trait CreateData
         ]);
 
         return $product;
+    }
+
+    public function createColor($name = 'Rojo')
+    {
+        $color = Color::create([
+            'name' => $name
+        ]);
+
+        return $color;
+    }
+
+    public function createSize($product,$name = 'Talla S')
+    {
+        $product->sizes()->create([
+            'name' => $name
+        ]);
     }
 }
