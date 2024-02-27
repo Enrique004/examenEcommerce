@@ -23,6 +23,13 @@
                                              placeholder="Introduzca el nombre del producto a buscar" />
                             </div>
 
+                            <label>Ordenar por columna:</label>
+                            <select wire:model="orden">
+                                <option value="name" selected>Nombre</option>
+                                <option value="totalQuantity">Ventas</option>
+                                <option value="totalReserves">Reservas</option>
+                            </select>
+
                             @if($products->count())
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
@@ -72,30 +79,28 @@
                                                 <div class="text-sm text-gray-500">{{ $product->subcategory->name }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <?php $totalQuantity = 0?>
                                                 @foreach($orders as $order)
                                                     <?php $items = json_decode($order->content)?>
                                                     @foreach($items as $item)
                                                         @if($item->name == $product->name)
-                                                                <?php $totalQuantity += $item->qty?>
+                                                           <?php $product->totalQuantity += $item->qty?>
                                                         @endif
                                                     @endforeach
                                                 @endforeach
-                                                {{$totalQuantity}}
+                                                {{$product->totalQuantity ?: 0}}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <?php $totalQuantity = 0?>
                                                 @foreach($orders as $order)
                                                     @if($order->status == 1)
                                                         <?php $items = json_decode($order->content)?>
                                                         @foreach($items as $item)
                                                             @if($item->name == $product->name)
-                                                               <?php $totalQuantity ++?>
+                                                               <?php $product->totalReserves ++?>
                                                             @endif
                                                         @endforeach
                                                     @endif
                                                 @endforeach
-                                                {{$totalQuantity}}
+                                                {{$product->totalReserves ?: 0}}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $product->status == 1 ? 'red' : 'green' }}-100 text-{{ $product->status == 1 ? 'red' : 'green' }}-800">
