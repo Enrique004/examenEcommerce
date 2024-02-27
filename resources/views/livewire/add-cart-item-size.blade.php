@@ -6,7 +6,7 @@
             <option value="" selected disabled>Seleccione una talla</option>
 
             @foreach ($sizes as $size)
-                <option value="{{$size->id}}">{{$size->name}}</option>
+                <option dusk="selected-size-{{$size->id}}" value="{{$size->id}}">{{$size->name}}</option>
             @endforeach
         </select>
     </div>
@@ -18,7 +18,7 @@
             <option value="" selected disabled>Seleccione un color</option>
 
             @foreach ($colors as $color)
-                <option value="{{$color->id}}">{{__(ucfirst($color->name))}}</option>
+                <option dusk="selected-color-{{$color->id}}" value="{{$color->id}}">{{__(ucfirst($color->name))}}</option>
             @endforeach
         </select>
     </div>

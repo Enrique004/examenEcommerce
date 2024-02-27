@@ -28,7 +28,7 @@
                 <span class="font-semibold text-gray-700 ml-auto">Gratis</span>
             </label>
 
-            <div class="bg-white rounded-lg shadow">
+            <div dusk="type2" class="bg-white rounded-lg shadow">
                 <label class="px-6 py-4 flex items-center">
                     <input x-model="envio_type" type="radio" name="envio_type" value="2" class="text-gray-600">
                     <span class="ml-2 text-gray-700">Envío a domicilio</span>
@@ -37,30 +37,30 @@
                 <div class="px-6 pb-6 grid grid-cols-2 gap-6" :class="{'hidden': envio_type != 2}">
                     <div>
                         <x-jet-label value="Departamento" />
-                        <select class="form-control w-full" wire:model="department_id">
+                        <select dusk="departments" class="form-control w-full" wire:model="department_id">
                             <option value="" disabled selected>Seleccione un departamento</option>
                             @foreach($departments as $department)
-                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                <option dusk="selected-department-{{$department->id}}" value="{{ $department->id }}">{{ $department->name }}</option>
                             @endforeach
                         </select>
                         <x-jet-input-error for="department_id" />
                     </div>
                     <div>
                         <x-jet-label value="Ciudad" />
-                        <select class="form-control w-full" wire:model="city_id">
+                        <select dusk="cities" class="form-control w-full" wire:model="city_id">
                             <option value="" disabled selected>Seleccione una ciudad</option>
                             @foreach($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                <option dusk="selected-city-{{$city->id}}" value="{{ $city->id }}">{{ $city->name }}</option>
                             @endforeach
                         </select>
                         <x-jet-input-error for="city_id" />
                     </div>
                     <div>
                         <x-jet-label value="Distrito" />
-                        <select class="form-control w-full" wire:model="district_id">
+                        <select dusk="districts" class="form-control w-full" wire:model="district_id">
                             <option value="" disabled selected>Seleccione un distrito</option>
                             @foreach($districts as $district)
-                                <option value="{{ $district->id }}">{{ $district->name }}</option>
+                                <option  value="{{ $district->id }}">{{ $district->name }}</option>
                             @endforeach
                         </select>
                         <x-jet-input-error for="district_id" />
