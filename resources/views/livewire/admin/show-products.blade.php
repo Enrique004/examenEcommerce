@@ -78,29 +78,13 @@
                                                 <div class="text-sm text-gray-900">{{ $product->subcategory->category->name }}</div>
                                                 <div class="text-sm text-gray-500">{{ $product->subcategory->name }}</div>
                                             </td>
+
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                @foreach($orders as $order)
-                                                    <?php $items = json_decode($order->content)?>
-                                                    @foreach($items as $item)
-                                                        @if($item->name == $product->name)
-                                                           <?php $product->totalQuantity += $item->qty?>
-                                                        @endif
-                                                    @endforeach
-                                                @endforeach
-                                                {{$product->totalQuantity ?: 0}}
+                                                {{$product->totalQuantity}}
                                             </td>
+
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                @foreach($orders as $order)
-                                                    @if($order->status == 1)
-                                                        <?php $items = json_decode($order->content)?>
-                                                        @foreach($items as $item)
-                                                            @if($item->name == $product->name)
-                                                               <?php $product->totalReserves ++?>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                @endforeach
-                                                {{$product->totalReserves ?: 0}}
+                                                {{$product->totalReserves}}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $product->status == 1 ? 'red' : 'green' }}-100 text-{{ $product->status == 1 ? 'red' : 'green' }}-800">
@@ -122,11 +106,13 @@
                                     No existen productos coincidentes
                                 </div>
                             @endif
-                        @if($products->hasPages())
-                                <div class="px-6 py-4">
-                                    {{ $products->links() }}
-                                </div>
-                            @endif
+                        @if($this->orden != 'totalQuantity' && $this->orden != 'totalReserves')
+                                @if($products->hasPages())
+                                    <div class="px-6 py-4">
+                                        {{ $products->links() }}
+                                    </div>
+                                @endif
+                        @endif
                         </x-table-responsive>
                     </div>
                 </div>

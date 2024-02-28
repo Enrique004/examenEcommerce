@@ -7,6 +7,7 @@ use App\Http\Livewire\AddCartItemColor;
 use App\Http\Livewire\AddCartItemSize;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Size;
@@ -28,34 +29,17 @@ class CartTest extends TestCase
     /** @test */
     function the_cart_is_saved_when_you_log_out_with_the_three_products()
     {
-        $category = $this->createCategory();
-
-        $subcategory = $this->createSubcategory($category->id);
-        $subcategoryWithColor = $this->createSubcategory($category->id,1);
-        $subcategoryWithColorAndSize = $this->createSubcategory($category->id,1,1);
-
-        $product = $this->createProduct($subcategory->id,'A',25,5);
-        $productWithColor = $this->createProduct($subcategoryWithColor->id,'B',20,10);
-        $productWithColorAndSize = $this->createProduct($subcategoryWithColorAndSize->id,'C',30,2);
-
+        $product = $this->create(1,0,0,'A',25,5);
+        $productWithColor = $this->create(1,1,0,'B',20,10);
+        $productWithColorAndSize = $this->create(1,1,1,'C',30,2);
         $color = $this->createColor();
+        $this->createSize($productWithColorAndSize,$color->id);
+
         $productWithColor->colors()->attach([
             $color->id => [
                 'quantity' => 5
             ]
         ]);
-
-        $this->createSize($productWithColorAndSize);
-
-        $sizes = Size::all();
-
-        foreach ($sizes as $size) {
-            $size->colors()->attach([
-                $color->id => [
-                    'quantity' => 10
-                ],
-            ]);
-        }
 
         $user = User::factory()->create();
 

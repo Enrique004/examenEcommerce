@@ -20,12 +20,8 @@ class SearchTest extends TestCase
     /** @test */
     function you_can_search_a_product()
     {
-        $category  = $this->createCategory();
-
-        $subcategory = $this->createSubcategory($category->id);
-
-        $product1 = $this->createProduct($subcategory->id,'IPHONE');
-        $product2 = $this->createProduct($subcategory->id,'APPLE');
+        $product1 = $this->create(1,0,0,'IPHONE',);
+        $product2 = $this->create(1,0,0,'APPLE');
 
 
         $this->get('/search?name=IPH')

@@ -15,7 +15,6 @@ class Product extends Model
 
     protected $fillable = ['name', 'slug', 'description', 'price', 'subcategory_id', 'brand_id', 'quantity'];
     //protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $appends = ['totalQuantity','totalReserves'];
 
     public function sizes(){
         return $this->hasMany(Size::class);
@@ -55,5 +54,43 @@ class Product extends Model
         } else {
             return $this->quantity;
         }
+    }
+
+    public function getTotalQuantityAttribute()
+    {
+        $orders = Order::all();
+        $totalQuantity = 0;
+
+        foreach ($orders as $order) {
+            if ($order->status != 1) {
+                $items = json_decode($order->content);
+                foreach ($items as $item) {
+                    if($item->name == $this->name) {
+                        $totalQuantity += $item->qty;
+                    }
+                }
+            }
+        }
+
+        return $totalQuantity;
+    }
+
+    public function getTotalReservesAttribute()
+    {
+        $orders = Order::all();
+        $totalReserves = 0;
+
+        foreach ($orders as $order) {
+            if ($order->status == 1) {
+                $items = json_decode($order->content);
+                foreach ($items as $item) {
+                    if($item->name == $this->name) {
+                        $totalReserves += $item->qty;
+                    }
+                }
+            }
+        }
+
+        return $totalReserves;
     }
 }

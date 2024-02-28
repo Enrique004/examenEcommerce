@@ -25,9 +25,7 @@ class UsersTest extends TestCase
     /** @test */
     function you_can_show_the_links_of_login_if_you_are_not_logged_in()
     {
-        $category = $this->createCategory();
-
-        $subcategory = $this->createSubcategory($category->id);
+        $subcategory = $this->create2();
 
         $this->assertGuest(); // Simula que el user no esta autenticado
 
@@ -113,11 +111,7 @@ class UsersTest extends TestCase
     /** @test */
     function the_cart_is_saved_when_you_log_out()
     {
-        $category = $this->createCategory();
-
-        $subcategory = $this->createSubcategory($category->id);
-
-        $product = $this->createProduct($subcategory->id);
+        $product = $this->create();
 
         $user = User::factory()->create();
 
@@ -140,17 +134,7 @@ class UsersTest extends TestCase
     /** @test */
     function you_can_not_show_yours_orders_if_you_are_not_logged_in()
     {
-        $category = Category::factory()->create([
-            'name' => 'Celulares y tablets',
-            'slug' => Str::slug('Celulares y tablets'),
-            'icon' => '<i class="fas fa-mobile-alt"></i>',
-        ]);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'name' => 'Celulares y smartphones',
-            'slug' => Str::slug('Celulares y smartphones'),
-        ]);
+        $subcategory = $this->create2();
 
         $this->get('orders')
             ->assertStatus(302);
@@ -159,35 +143,11 @@ class UsersTest extends TestCase
     /** @test */
     function you_can_not_show_the_summary_of_a_order_if_you_are_not_logged_in()
     {
-        $category = Category::factory()->create([
-            'name' => 'Celulares y tablets',
-            'slug' => Str::slug('Celulares y tablets'),
-            'icon' => '<i class="fas fa-mobile-alt"></i>',
-        ]);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'name' => 'Celulares y smartphones',
-            'slug' => Str::slug('Celulares y smartphones'),
-        ]);
+        $subcategory = $this->create2();
 
         $user = User::factory()->create();
 
-        $order = Order::create([
-            'phone' => '1234',
-            'contact' => 'eefa',
-            'shipping_cost' => 0,
-            'total' => 5,
-            'content' => json_encode([
-                'product' => 'Producto 1',
-                'quantity' => 2,
-                'price' => 25.00,
-                'description' => 'Descripción del producto 1'
-            ]),
-            'user_id' => $user->id,
-            'status' => 1,
-            'envio_type' => 1
-        ]);
+        $order = $this->createOrder($user->id);
 
         $this->get('orders/' . $order->id)
             ->assertStatus(302);
@@ -233,52 +193,14 @@ class UsersTest extends TestCase
     /** @test */
     function the_vision_policy_works_correctly()
     {
-        $category = Category::factory()->create([
-            'name' => 'Celulares y tablets',
-            'slug' => Str::slug('Celulares y tablets'),
-            'icon' => '<i class="fas fa-mobile-alt"></i>',
-        ]);
-
-        $subcategory = Subcategory::factory()->create([
-            'category_id' => $category->id,
-            'name' => 'Celulares y smartphones',
-            'slug' => Str::slug('Celulares y smartphones'),
-        ]);
+        $subcategory = $this->create2();
 
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
 
-        $order1 = Order::create([
-            'phone' => '1234',
-            'contact' => 'eefa',
-            'shipping_cost' => 0,
-            'total' => 5,
-            'content' => json_encode([
-                'product' => 'Producto 1',
-                'quantity' => 2,
-                'price' => 25.00,
-                'description' => 'Descripción del producto 1'
-            ]),
-            'user_id' => $user1->id,
-            'status' => 1,
-            'envio_type' => 1
-        ]);
+        $order1 = $this->createOrder($user1->id);
 
-        $order2 = Order::create([
-            'phone' => '5678',
-            'contact' => 'john',
-            'shipping_cost' => 0,
-            'total' => 10,
-            'content' => json_encode([
-                'product' => 'Producto 2',
-                'quantity' => 1,
-                'price' => 10.00,
-                'description' => 'Descripción del producto 2'
-            ]),
-            'user_id' => $user2->id,
-            'status' => 1,
-            'envio_type' => 1
-        ]);
+        $order2 = $this->createOrder($user2->id);
 
         $this->actingAs($user1)
             ->get('orders/' . $order2->id . '/payment')

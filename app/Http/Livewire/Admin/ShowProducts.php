@@ -12,13 +12,8 @@ class ShowProducts extends Component
 {
     use WithPagination;
 
-    public $search,$orders;
+    public $search;
     public $orden = 'name';
-
-    public function mount()
-    {
-        $this->orders = Order::all();
-    }
 
     public function updatingSearch()
     {
@@ -29,21 +24,18 @@ class ShowProducts extends Component
     {
         if(Schema::hasColumn('products',$this->orden)) {
             $products = Product::where('name', 'LIKE', "%{$this->search}%")
-                ->orderBy($this->orden)
-                ->paginate(10);
-        } elseif ($this->orden == 'totalQuantity') {
+                    ->orderBy($this->orden)
+                    ->paginate(10);
+        } else if ($this->orden == 'totalQuantity') {
             $products = Product::where('name', 'LIKE', "%{$this->search}%")
-                ->paginate(10);
+                ->get();
 
-            foreach ($products as $product) {
-                $product->orderBy($product->totalQuantity);
-            }
-            $products->sortBy($this->orden);
-        } elseif ($this->orden == 'totalReserves') {
+            $products = $products->sortByDesc('totalQuantity');
+        } else if ($this->orden == 'totalReserves') {
             $products = Product::where('name', 'LIKE', "%{$this->search}%")
-                ->paginate(10);
+                ->get();
 
-            $products->sortBy('totalReserves');
+            $products = $products->sortByDesc('totalReserves');
         }
 
         return view('livewire.admin.show-products', compact('products'))
